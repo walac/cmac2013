@@ -1,0 +1,347 @@
+\documentclass[a4,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{epsfig}
+\usepackage[top=3cm,bottom=2cm,left=3cm,right=2cm]{geometry}
+\usepackage{indentfirst}
+\usepackage{longtable}
+\usepackage{lscape}
+\usepackage{vaucanson-g}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{float}
+\usepackage{chngcntr}
+\usepackage{lscape}
+\usepackage{multicol}
+%\usepackage{algcompatible}
+
+\pagestyle{empty}
+
+\headheight 20mm      %
+\oddsidemargin 2.0mm  %
+\evensidemargin 2.0mm %
+\topmargin -40mm      %
+\textheight 250mm     %
+\textwidth 160mm      %
+
+\floatname{algorithm}{Algoritmo}
+
+\newenvironment{definition}[1][Definition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\counterwithin{equation}{section}
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
+
+\begin{document}
+
+\title{ \Large{\bf Uma notação matricial para representação de grafos de processo de autômatos celulares elementares}}
+
+\author{ {\bf {\large Wander Lairson Costa$^2$}} \hspace*{1cm} {\bf {\large
+ Pedro P.B. de Oliveira$^{1,2}$}}  \\
+ {\small Faculdade Computação e Informática$^1$ \& Pós-Graduação em Engenharia Elétrica$^2$} \\
+ {\small Universidade Presbiteriana Mackenzie} \\
+ {\small Rua da Consolação 896, Consolação - 013020-907 São Paulo, SP} \\
+ {\small wander.lairson@gmail.com \hspace*{.2cm}  pedrob@mackenzie.br} }
+
+\date{}
+
+\maketitle
+
+\thispagestyle{empty}
+\noindent{\bf Palavras-chave:} {\it Autômatos celulares, Matrizes de adjacência, Grafos de processo}
+
+\vspace{5ex}
+
+\noindent{\bf Resumo:}
+\textit{Autômatos celulares (ACs) são sistemas totalmente discretos que agem
+localmente de forma simples e determinística, mas cujo comportamento
+global resultante pode ser extremamente complexo. O conjunto de possíveis
+configurações globais em um passo de tempo $t$ finito para um AC pode ser
+descrito por um grafo de processo, que é um tipo de autômato finito em que
+todos os estados são iniciais e finais. Propõe-se aqui uma nova representação
+de grafos de processo para ACs por meio de matrizes. Esta notação
+permite derivar algoritmos de formação de grafos de processo para qualquer passo
+de tempo de ACs que possuem crescimento estruturado.
+Conclui-se que essa nova notação facilita a derivação de algoritmos de formação de
+grafos de processo e acelera o processo de experimentos computacionais com ACs.}
+
+\section{Introdução} 
+
+Autômatos celulares (ACs) são sistemas discretos que apresentam um comportamento
+local extremamente simples, mas cujo comportamento global pode ser tão
+complexo quanto uma máquina de Turing \cite{wolfram1984a}. Ele
+é caracterizado por um reticulado de células cujos estados posteriores
+dependem dos estados anteriores de si próprias e de suas vizinhas.
+Este tipo de comportamento, que é localmente simples mas globalmente
+complexo dá origem à chamada \textit{computação emergente}, e é
+a base da utilização dos ACs na modelagem de diversos sistemas naturais.
+
+A vizinhança das células de um AC por ser definida por
+um raio de vizinhança que tem seu centro na célula em questão, e engloba
+todas as células que está dentro do raio. Um AC
+elementar possui raio igual a 1 e conjunto de estados $\{0,1\}$,
+o que permite a definição de um espaço de 256 regras possíveis, que
+são usualmente identificadas por um número entre 0 e 255
+\cite{wolfram1984}.
+
+O comportamento limite de ACs pode ser descrito por meio
+de linguagens formais, a partir das cadeias ou
+palavras formadas por seu alfabeto \cite{lewis2008}.
+A classe mais simples de linguagens formais é
+a das linguagens regulares, que pode ser gerada por uma gramática regular ou
+pelas chamadas expressões regulares. Qualquer linguagem regular pode ser
+reconhecida por um autômato finito (AF), que é uma modalidade de autômato que
+possui memória restrita. As linguagens regulares são o tipo mais simples
+de linguagem na hierarquia de Chomsky.
+
+O conjunto de todas as configurações globais de um AC
+elementar em um dado momento no tempo discreto pode ser descrito por
+uma linguagem regular e, consequentemente, um AF
+\cite{wolfram1984}.
+
+Um AF que representa o conjunto de configurações de um passo de tempo de um
+AC pode também ser representado por um grafo de processo \cite{wolfram1984}.
+Um grafo de processo é um tipo de autômato onde todos os estados são
+iniciais e finais \cite{hanson1992}.
+
+Para se determinar o grafo de processo do passo $t+1$ de um AC, é
+necessário partir-se do grafo de processo do passo $t$. Dentro do espaço
+elementar de regras, existem ACs cujos sucessivos grafos de processo que
+representam sua evolução temporal apresentam crescimento
+estruturado, e é possível determinar o grafo de processo de tempo $t$ de
+forma direta, sem a necessidade de gerar-se todos os $t-1$ grafos de
+processo \cite{trafaniuc2004}. Este trabalho apresenta uma proposta de
+representação de grafos de processo utilizando uma nova notação matricial
+que permite desenvolver algoritmos que gerem os grafos de processo para
+ACs elementares de forma direta, sem depender do grafo de processo do
+instante anterior.
+
+A Seção \ref{sec:ca} descreve de forma sumária os padrões de crescimento
+de ACs, a Seção \ref{sec:matrix} descreve a notação de matrizes de adjacência
+desenvolvida e a Seção \ref{sec:conclusion} conclui o texto.
+
+\section{Padrões de crescimento de ACs elementares}\label{sec:ca}
+
+O espaço de configurações iniciais de um AC
+elementar pode ser qualquer combinação de sequências de 0s e 1s
+representando os estados iniciais das células. O grafo de processo
+que representa tal sequência pode ser visualizado na Figura
+\ref{fig:initconfigautomaton}.
+
+Após 1 passo de tempo, o conjunto de configurações que podem aparecer
+torna-se mais restrito, e esse conjunto é representado por um novo grafo
+de processo. A Figura \ref{fig:r184step1} mostra o grafo de processo que
+representa 1 passo de tempo da regra elementar 184.
+
+\begin{figure}[htp]
+\begin{minipage}[b]{0.5\linewidth}
+\centering
+\begin{VCPicture}{(0,0)(2,2)}
+\State[A]{(1,1)}{A}
+\LoopN{A}{0,1}
+\end{VCPicture}
+\caption{Grafo de processo representando as possíveis configurações
+iniciais.}
+\label{fig:initconfigautomaton}
+\end{minipage}
+\hspace{0.5cm}
+\begin{minipage}[b]{0.5\linewidth}
+\centering
+\begin{VCPicture}{(-3,-3)(3,3)}
+\State[B]{(-3,0)}{B} \State[C]{(0,-2)}{C}
+\State[A]{(0,2)}{A} \State[D]{(3,0)}{D}
+\ArcL{A}{C}{1}
+\LoopW{B}{1} \ArcL{B}{A}{0}
+\ArcL{C}{B}{1} \ArcL{C}{D}{0}
+\LoopE{D}{0} \ArcL{D}{C}{1}
+\end{VCPicture}
+\caption{Grafo de processo representando as possíveis configurações
+após 1 passo de tempo para a regra 184.}
+\label{fig:r184step1}
+\end{minipage}
+\end{figure}
+
+Os grafos de processo de determinadas regras do espaço elementar possuem como
+característica um padrão de crescimento. Trafaniuc \cite{trafaniuc2004}
+identificou 26 regras com essa característica, e conseguiu obter algoritmos
+para geração do grafo de processo de tempo $t$ para 12 delas, por meio da
+inspeção visual dos grafos de processo. A seguir é apresentada uma notação
+de representação matricial de grafos de processo que visa facilitar essa
+análise manual.
+
+\section{Grafos de processo por meio de matrizes de adjacência}\label{sec:matrix}
+
+Grafos podem ser representados por uma matriz $N \times N$, onde $N$
+é o número de estados do grafo. Cada posição $A_{ij}$ da matriz recebe o valor
+1 quando existe uma transição do estado $i$ para o estado $j$, ou 0 caso o
+contrário. Este tipo de notação, porém, é insuficiente para representar grafos
+de processo, dado que: (1) Em grafos de processo, é possível haver mais de
+uma transição por par de estados. (2) Nos índices da matriz não está
+codificado o valor da transição, que é o valor esperado na fita de
+entrada de um AF.
+
+Para contornar este problema, foi desenvolvida uma nova notação de matrizes de adjacência,
+chamadas de \textit{matrizes de adjacência de evolução temporal}.
+
+Uma matriz de adjacência de evolução temporal é uma notação de matriz de
+adjacência para representar grafos de processo que possui uma relação
+de isomorfismo entre a matriz e sua representação em grafo.
+Formalmente, dado o conjunto de matrizes de adjacência
+de evolução temporal $\mathbb{M}$ e o conjunto de grafos de processo $\mathbb{G}$,
+existe uma transformação $T: \mathbb{G} \mapsto \mathbb{M}$ e uma
+transformação $T^{-1}: \mathbb{M} \mapsto \mathbb{G}$. 
+
+O elemento chave para conseguir essa relação de isomorfismo
+é encontrar uma representação do conjunto de transições e
+seus respectivos valores em um número real que possa ser codificado
+nos índices da matriz, e que possa ser decodificado quando for
+aplicada a transformação $T^{-1}$. Formalmente, dado o conjunto de transições
+$\mathbb{L}$ do estado $i$ para o estado $j$, $\forall i,j$, encontrar uma
+relação $\eta:\mathbb{L} \mapsto \Re$ que seja bijetora.
+
+A resposta para esta questão está em criar um mapeamento dos valores
+possíveis de transições para o conjunto de números naturais
+$\mathbb{L} \mapsto \mathbb{N}$ e então codificar os valores das transições
+em um número binário. Cada bit do número binário corresponde a um valor de
+transição. Se o valor no $k$-ésimo bit for 1, significa que existe uma
+transição (mapeada no conjunto dos naturais) de valor $k$ do estado de
+origem para o estado destino em questão. A operação $\eta$ de codificação dos
+arcos $\mathbb{L}$ em um número natural é o polinômio de base 2
+$\eta(\mathbb{L}_{ij}) = \sum_{\forall k \in (\mathbb{L}_{ij} \mapsto \mathbb{N})} 2^k$,
+onde $\mathbb{L}_{ij}$ é o conjunto de transições do estado $i$ para o estado $j$,
+o que permite a definição de um espaço de 256 regras possíveis, que são usualmente
+identificadas por um número entre 0 e 255 \cite{wolfram1984}.
+
+Nota-se que como $k \in \mathbb{N}$, então $\eta(\mathbb{L}_{ij}) \in \mathbb{Z}$,
+ou seja, $\eta(\mathbb{L}_{ij})$ está restrita ao domínio dos inteiros. Se
+$k \in \mathbb{Z}$ ($\mathbb{L}_{ij} \mapsto \mathbb{Z}$), então
+$\eta(\mathbb{L}_{ij}) \in \Re$, pois admitiria-se a possibilidade de expoentes negativos.
+Como computacionalmente é mais custoso trabalhar-se com números reais do que com inteiros,
+e não há benefício aparente em expandir $\eta$ para o domínio dos reais,
+já que $\mathbb{N}$ é contavelmente infinito \cite{lewis2008}, optou-se
+por restringir-se $\eta$ ao domínio dos números inteiros. Outra observação
+é a de que a base númerica não necessariamente deve ser base 2. Poderia-se trabalhar com outras
+bases. Todavia, a única implicação na mudança de base é a quantidade de dígitos
+necessária para representar um dado conjunto $2^{\mathbb{L}}$ de possíveis combinações de
+transições e, do ponto de vista de arquitetura computacional, a base 2 é a
+base mais natural para se trabalhar.
+
+\begin{algorithm}
+\caption{Algoritmo para gerar a matriz de adjacência de evolução temporal a partir
+de um grafo de processo.}
+\label{alg:stom}
+\begin{algorithmic}
+\STATE $n \leftarrow \mbox{Length}(\mathbb{Q})$ \COMMENT{número de estados}
+\STATE $A \leftarrow \mbox{ Matriz nula } n \times n$
+\FORALL{$i,j \in \mathbb{Q}$}
+\IF{$\mathbb{L}_{ij} \neq \emptyset$}
+\STATE $A_{ij} = \eta(\mathbb{\mathbb{L}}_{ij})$
+\ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+O Algoritmo \ref{alg:stom} refere-se à transformação de um grafo
+de processo em uma matriz de evolução temporal. Já o Algoritmo \ref{alg:mtos}
+representa o processo inverso, ou seja, transforma uma
+matriz de evolução temporal em um grafo de processo; este último
+faz uso de uma operação chamada \emph{MakeTransition(i,j,n)}, que cria uma transição
+do estado $i$ para o estado $j$ com valor $n$.
+
+De posse dos algoritmos de transformação entre matrizes de adjacências e grafos
+de processo, foi possível obter o algoritmo que gere as matrizes de adjacências de tempo
+T para os 26 ACs identificados em \cite{trafaniuc2004}. Como
+ilustração, o Algoritmo \ref{alg:r184} representa o processo para a regra 184.
+
+\begin{figure*}[ttt!]
+
+\begin{minipage}[t]{3.00in}
+\begin{algorithm}[H]
+\caption{Algoritmo para gerar o grafo de processo a partir de uma matriz de
+adjacência de evolução temporal.}
+\label{alg:mtos}
+\begin{algorithmic}
+\FOR{$i=1$ to $n$}
+    \FOR{$j=1$ to $n$}
+        \IF{$A_{ij} \neq 0$}
+            \REPEAT
+                \STATE $q = \lfloor A_{ij} \div 2 \rfloor$
+                \STATE $r = Mod(A_{ij},2)$
+                \IF{$r \neq 0$}
+                    \STATE $n=0$
+                    \WHILE{$2^n \le A_{ij}$}
+                        \STATE $n=n+1$
+                    \ENDWHILE
+                    \STATE MakeTransition$(i,j,n-1)$
+                \ENDIF
+            \UNTIL{$q \neq 0$}
+        \ENDIF
+    \ENDFOR
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{3.00in}
+\begin{algorithm}[H]
+\caption{Algoritmo para gerar a matriz de adjacência de evolução temporal do
+grafo de processo de tempo $t$ para a regra 184.}
+\label{alg:r184}
+\begin{algorithmic}
+\STATE $A \leftarrow \mbox{ matriz nula } n \times n \mbox{, onde } n=2(t+1)$
+\STATE $i \leftarrow t+1$
+\FOR{$j=1$ to t}
+    \STATE $A_{ij} \leftarrow 1$
+    \STATE $i \leftarrow i+1$
+\ENDFOR
+\FOR{$i=t+1$ to $n$}
+    \STATE $A_{i,t+1} \leftarrow 2$
+\ENDFOR
+\STATE $j \leftarrow t+2$
+\FOR{$i=1$ to $t$}
+    \STATE $A_{ij} \leftarrow 2$
+    \STATE $j \leftarrow j+1$
+\ENDFOR
+\STATE $A_{n,n} \leftarrow 1$
+\STATE $A_{n-1,n} \leftarrow 1$
+\STATE $A_{n,n-1} \leftarrow 2$
+\end{algorithmic}
+\end{algorithm}
+\end{minipage}
+\hfill
+\end{figure*}
+
+\section{Conclusão}\label{sec:conclusion}
+
+A presente proposta de notação de grafos de processo permitiu o
+desenvolvimento dos algoritmos de formação de grafos de processo de tempo
+T para as 26 regras descritas em \cite{trafaniuc2004}, onde até então
+somente tinha sido possível encontrar os algoritmos para 12 dessas regras,
+o que mostra uma evolução em relação à técnica desenvolvida anteriormente.
+Este fato evidencia a maior facilidade de análise da notação matricial em
+relação à notação em grafo. Para a validação do algoritmo, foram comparadas
+as matrizes de adjacência geradas utilizando esta técnica com as matrizes
+geradas pelo método convencional de construção de grafos de processo para
+os primeiros 100 passos de tempo para cada regra do grupo de 26 estudadas.
+
+De posse do algoritmo de geração da matriz de passo T para uma
+determinada regra e do algoritmo de transformação de uma matriz de
+adjacência de evolução temporal em um grafo de processo, é possível
+gerar o grafo de processo para qualquer instante de tempo com complexidade
+$O(1)$ em relação ao passo de tempo, em contraste com a complexidade
+$O(n)$ da abordagem tradicional.
+
+Com isso, recursos computacionais em experimentos envolvendo ACs
+elementares podem ser drasticamente reduzidos, e estudos,
+como por exemplo, sobre comportamento limite de ACs por meio de linguagens
+regulares tornam-se mais fáceis.
+
+%\def\refname{Referências bibliográficas}
+\bibliographystyle{plainpor}
+\bibliography{ca_stepT}
+%\addcontentsline{toc}{section}{Referências bibliográficas} 
+
+\end{document}
