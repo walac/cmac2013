@@ -206,7 +206,7 @@ A resposta para esta questão está em criar um mapeamento dos valores
 possíveis de transições para o conjunto de números naturais
 $\mathbb{L} \mapsto \mathbb{N}$ e então codificar os valores das transições
 em um número binário. Cada bit do número binário corresponde a um valor de
-transição. Se o valor no $k$-ésimo bit for 1, significa que existe uma
+transição. Se o valor no $k$-ésimo bit for 1, existe uma
 transição (mapeada no conjunto dos naturais) de valor $k$ do estado de
 origem para o estado destino em questão. A operação $\eta$ de codificação dos
 arcos $\mathbb{L}$ em um número natural é o polinômio de base 2
@@ -219,11 +219,11 @@ Nota-se que como $k \in \mathbb{N}$, então $\eta(\mathbb{L}_{ij}) \in \mathbb{Z
 ou seja, $\eta(\mathbb{L}_{ij})$ está restrita ao domínio dos inteiros. Se
 $k \in \mathbb{Z}$ ($\mathbb{L}_{ij} \mapsto \mathbb{Z}$), então
 $\eta(\mathbb{L}_{ij}) \in \Re$, pois admitiria-se a possibilidade de expoentes negativos.
-Como computacionalmente é mais custoso trabalhar-se com números reais do que com inteiros,
+Como computacionalmente é mais custoso trabalhar com números reais do que com inteiros
 e não há benefício aparente em expandir $\eta$ para o domínio dos reais,
 já que $\mathbb{N}$ é contavelmente infinito \cite{lewis2008}, optou-se
-por restringir-se $\eta$ ao domínio dos números inteiros. Outra observação
-é a de que a base númerica não necessariamente deve ser base 2. Poderia-se trabalhar com outras
+por restringir $\eta$ ao domínio dos números inteiros. Outra observação
+é a de que a base numérica não necessariamente deve ser base 2, poderia-se trabalhar com outras
 bases. Todavia, a única implicação na mudança de base é a quantidade de dígitos
 necessária para representar um dado conjunto $2^{\mathbb{L}}$ de possíveis combinações de
 transições e, do ponto de vista de arquitetura computacional, a base 2 é a
