@@ -11,5 +11,3 @@ has structuring growth.
 We conclude that this new notation makes easier process graphs forming
 algorithms and accelarate the CAs computation experiments.
 
-This paper has been accepted to CMAC NE 2012. Details at
-http://www.cmac.org.br/nordeste/2012/
