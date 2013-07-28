@@ -68,7 +68,7 @@ de tempo de ACs que possuem crescimento estruturado.
 Conclui-se que essa nova notação facilita a derivação de algoritmos de formação de
 grafos de processo e acelera o processo de experimentos computacionais com ACs.}
 
-\section{Introdução} 
+\section{Introdução}
 
 Autômatos celulares (ACs) são sistemas discretos que apresentam um comportamento
 local extremamente simples, mas cujo comportamento global pode ser tão
@@ -192,42 +192,7 @@ de isomorfismo entre a matriz e sua representação em grafo.
 Formalmente, dado o conjunto de matrizes de adjacência
 de evolução temporal $\mathbb{M}$ e o conjunto de grafos de processo $\mathbb{G}$,
 existe uma transformação $T: \mathbb{G} \mapsto \mathbb{M}$ e uma
-transformação $T^{-1}: \mathbb{M} \mapsto \mathbb{G}$. 
-
-O elemento chave para conseguir essa relação de isomorfismo
-é encontrar uma representação do conjunto de transições e
-seus respectivos valores em um número real que possa ser codificado
-nos índices da matriz, e que possa ser decodificado quando for
-aplicada a transformação $T^{-1}$. Formalmente, dado o conjunto de transições
-$\mathbb{L}$ do estado $i$ para o estado $j$, $\forall i,j$, encontrar uma
-relação $\eta:\mathbb{L} \mapsto \Re$ que seja bijetora.
-
-A resposta para esta questão está em criar um mapeamento dos valores
-possíveis de transições para o conjunto de números naturais
-$\mathbb{L} \mapsto \mathbb{N}$ e então codificar os valores das transições
-em um número binário. Cada bit do número binário corresponde a um valor de
-transição. Se o valor no $k$-ésimo bit for 1, existe uma
-transição (mapeada no conjunto dos naturais) de valor $k$ do estado de
-origem para o estado destino em questão. A operação $\eta$ de codificação dos
-arcos $\mathbb{L}$ em um número natural é o polinômio de base 2
-$\eta(\mathbb{L}_{ij}) = \sum_{\forall k \in (\mathbb{L}_{ij} \mapsto \mathbb{N})} 2^k$,
-onde $\mathbb{L}_{ij}$ é o conjunto de transições do estado $i$ para o estado $j$,
-o que permite a definição de um espaço de 256 regras possíveis, que são usualmente
-identificadas por um número entre 0 e 255 \cite{wolfram1984}.
-
-Nota-se que como $k \in \mathbb{N}$, então $\eta(\mathbb{L}_{ij}) \in \mathbb{Z}$,
-ou seja, $\eta(\mathbb{L}_{ij})$ está restrita ao domínio dos inteiros. Se
-$k \in \mathbb{Z}$ ($\mathbb{L}_{ij} \mapsto \mathbb{Z}$), então
-$\eta(\mathbb{L}_{ij}) \in \Re$, pois admitiria-se a possibilidade de expoentes negativos.
-Como computacionalmente é mais custoso trabalhar com números reais do que com inteiros
-e não há benefício aparente em expandir $\eta$ para o domínio dos reais,
-já que $\mathbb{N}$ é contavelmente infinito \cite{lewis2008}, optou-se
-por restringir $\eta$ ao domínio dos números inteiros. Outra observação
-é a de que a base numérica não necessariamente deve ser base 2, poderia-se trabalhar com outras
-bases. Todavia, a única implicação na mudança de base é a quantidade de dígitos
-necessária para representar um dado conjunto $2^{\mathbb{L}}$ de possíveis combinações de
-transições e, do ponto de vista de arquitetura computacional, a base 2 é a
-base mais natural para se trabalhar.
+transformação $T^{-1}: \mathbb{M} \mapsto \mathbb{G}$.
 
 \begin{algorithm}
 \caption{Algoritmo para gerar a matriz de adjacência de evolução temporal a partir
@@ -244,20 +209,15 @@ de um grafo de processo.}
 \end{algorithmic}
 \end{algorithm}
 
-O Algoritmo \ref{alg:stom} refere-se à transformação de um grafo
-de processo em uma matriz de evolução temporal. Já o Algoritmo \ref{alg:mtos}
-representa o processo inverso, ou seja, transforma uma
-matriz de evolução temporal em um grafo de processo; este último
-faz uso de uma operação chamada \emph{MakeTransition(i,j,n)}, que cria uma transição
-do estado $i$ para o estado $j$ com valor $n$.
+O elemento chave para conseguir essa relação de isomorfismo
+é encontrar uma representação do conjunto de transições e
+seus respectivos valores em um número real que possa ser codificado
+nos índices da matriz, e que possa ser decodificado quando for
+aplicada a transformação $T^{-1}$. Formalmente, dado o conjunto de transições
+$\mathbb{L}$ do estado $i$ para o estado $j$, $\forall i,j$, encontrar uma
+relação $\eta:\mathbb{L} \mapsto \Re$ que seja bijetora.
 
-De posse dos algoritmos de transformação entre matrizes de adjacências e grafos
-de processo, foi possível obter o algoritmo que gere as matrizes de adjacências de tempo
-T para os 26 ACs identificados em \cite{trafaniuc2004}. Como
-ilustração, o Algoritmo \ref{alg:r184} representa o processo para a regra 184.
-
-\begin{figure*}[ttt!]
-
+\begin{figure}[H]
 \begin{minipage}[t]{3.00in}
 \begin{algorithm}[H]
 \caption{Algoritmo para gerar o grafo de processo a partir de uma matriz de
@@ -312,7 +272,46 @@ grafo de processo de tempo $t$ para a regra 184.}
 \end{algorithm}
 \end{minipage}
 \hfill
-\end{figure*}
+\end{figure}
+
+A resposta para esta questão está em criar um mapeamento dos valores
+possíveis de transições para o conjunto de números naturais
+$\mathbb{L} \mapsto \mathbb{N}$ e então codificar os valores das transições
+em um número binário. Cada bit do número binário corresponde a um valor de
+transição. Se o valor no $k$-ésimo bit for 1, existe uma
+transição (mapeada no conjunto dos naturais) de valor $k$ do estado de
+origem para o estado destino em questão. A operação $\eta$ de codificação dos
+arcos $\mathbb{L}$ em um número natural é o polinômio de base 2
+$\eta(\mathbb{L}_{ij}) = \sum_{\forall k \in (\mathbb{L}_{ij} \mapsto \mathbb{N})} 2^k$,
+onde $\mathbb{L}_{ij}$ é o conjunto de transições do estado $i$ para o estado $j$,
+o que permite a definição de um espaço de 256 regras possíveis, que são usualmente
+identificadas por um número entre 0 e 255 \cite{wolfram1984}.
+
+Nota-se que como $k \in \mathbb{N}$, então $\eta(\mathbb{L}_{ij}) \in \mathbb{Z}$,
+ou seja, $\eta(\mathbb{L}_{ij})$ está restrita ao domínio dos inteiros. Se
+$k \in \mathbb{Z}$ ($\mathbb{L}_{ij} \mapsto \mathbb{Z}$), então
+$\eta(\mathbb{L}_{ij}) \in \Re$, pois admitiria-se a possibilidade de expoentes negativos.
+Como computacionalmente é mais custoso trabalhar com números reais do que com inteiros
+e não há benefício aparente em expandir $\eta$ para o domínio dos reais,
+já que $\mathbb{N}$ é contavelmente infinito \cite{lewis2008}, optou-se
+por restringir $\eta$ ao domínio dos números inteiros. Outra observação
+é a de que a base numérica não necessariamente deve ser base 2, poderia-se trabalhar com outras
+bases. Todavia, a única implicação na mudança de base é a quantidade de dígitos
+necessária para representar um dado conjunto $2^{\mathbb{L}}$ de possíveis combinações de
+transições e, do ponto de vista de arquitetura computacional, a base 2 é a
+base mais natural para se trabalhar.
+
+O Algoritmo \ref{alg:stom} refere-se à transformação de um grafo
+de processo em uma matriz de evolução temporal. Já o Algoritmo \ref{alg:mtos}
+representa o processo inverso, ou seja, transforma uma
+matriz de evolução temporal em um grafo de processo; este último
+faz uso de uma operação chamada \emph{MakeTransition(i,j,n)}, que cria uma transição
+do estado $i$ para o estado $j$ com valor $n$.
+
+De posse dos algoritmos de transformação entre matrizes de adjacências e grafos
+de processo, foi possível obter o algoritmo que gere as matrizes de adjacências de tempo
+T para os 26 ACs identificados em \cite{trafaniuc2004}. Como
+ilustração, o Algoritmo \ref{alg:r184} representa o processo para a regra 184.
 
 \section{Conclusão}\label{sec:conclusion}
 
@@ -342,6 +341,6 @@ regulares tornam-se mais fáceis.
 %\def\refname{Referências bibliográficas}
 \bibliographystyle{plainpor}
 \bibliography{ca_stepT}
-%\addcontentsline{toc}{section}{Referências bibliográficas} 
+%\addcontentsline{toc}{section}{Referências bibliográficas}
 
 \end{document}
